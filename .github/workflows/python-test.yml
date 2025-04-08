@@ -1,0 +1,44 @@
+name: Python测试与代码质量检查
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: 设置Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+    
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov flake8
+    
+    - name: 代码风格检查
+      run: |
+        # 使用flake8进行代码风格检查
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+    
+    - name: 运行测试
+      run: |
+        # 当有测试文件时取消注释以下行
+        # pytest --cov=./ --cov-report=xml
+      
+    # 当有测试覆盖率报告时可以添加
+    # - name: 上传覆盖率报告到Codecov
+    #   uses: codecov/codecov-action@v3
+    #   with:
+    #     file: ./coverage.xml 

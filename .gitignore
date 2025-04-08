@@ -1,0 +1,8 @@
+.env
+*.pdf
+
+__pycache__/
+venv/
+.DS_Store 
+.obsidian/
+.arxivenv/
